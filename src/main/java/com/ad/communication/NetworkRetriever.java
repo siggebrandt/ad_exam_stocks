@@ -1,10 +1,11 @@
 package com.ad.communication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sw.IStock;
 import sw.IStockRetriver;
 import sw.StockWatcher;
-
-import java.util.List;
 
 /**
  * This class will get notified when new stock prices are available.
@@ -24,6 +25,7 @@ import java.util.List;
 public class NetworkRetriever implements IStockRetriver {
 
     private static NetworkRetriever SINGELTON;
+    private static ArrayList<IStock> listOfStocks = new ArrayList<>();
 
     private NetworkRetriever() {
         // Start watching stock prices online!
@@ -38,9 +40,17 @@ public class NetworkRetriever implements IStockRetriver {
         return SINGELTON;
     }
 
+    public static ArrayList getStocks() {
+        return listOfStocks;
+    }
+
     // This method gets called when new stock prices are available.
     @Override
     public void dataInc(List<IStock> StockData) {
+        if (listOfStocks != null) {
+            listOfStocks.removeAll(listOfStocks);
+        }
+            listOfStocks.addAll(StockData);
             System.out.println(StockData);
     }
 }
