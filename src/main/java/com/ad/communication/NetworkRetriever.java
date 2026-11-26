@@ -3,6 +3,9 @@ package com.ad.communication;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ad.interfaces.IObserver;
+import com.ad.interfaces.ISubject;
+
 import sw.IStock;
 import sw.IStockRetriver;
 import sw.StockWatcher;
@@ -22,10 +25,11 @@ import sw.StockWatcher;
  * It is also perfectly fine to ignore/remove the singelton solution if you want
  * too setup connections to this class in some other way.
  */
-public class NetworkRetriever implements IStockRetriver {
+public class NetworkRetriever implements IStockRetriver, ISubject {
 
     private static NetworkRetriever SINGELTON;
-    private static ArrayList<IStock> listOfStocks = new ArrayList<>();
+    private final static ArrayList<IStock> listOfStocks = new ArrayList<>();
+    private final List<IObserver> listOfObservers = new ArrayList<>();
 
     private NetworkRetriever() {
         // Start watching stock prices online!
@@ -36,13 +40,12 @@ public class NetworkRetriever implements IStockRetriver {
         if (SINGELTON == null) {
             SINGELTON = new NetworkRetriever();
         }
-
         return SINGELTON;
     }
 
-    public static ArrayList getStocks() {
+    /* public static ArrayList getStocks() {
         return listOfStocks;
-    }
+    } */
 
     // This method gets called when new stock prices are available.
     @Override
@@ -51,6 +54,18 @@ public class NetworkRetriever implements IStockRetriver {
             listOfStocks.removeAll(listOfStocks);
         }
             listOfStocks.addAll(StockData);
-            System.out.println(StockData);
+            for (IObserver observer : listOfObservers) {
+                observer.update(StockData);
+            }
+    }
+
+    @Override
+    public void subscribe(IObserver observer) {
+        listOfObservers.add(observer);
+    }
+
+    @Override
+    public void unsubscribe(IObserver observer) {
+        listOfObservers.remove(observer);
     }
 }

@@ -1,20 +1,23 @@
 package com.ad.controllers;
 
-import com.ad.communication.NetworkRetriever;
-import com.ad.interfaces.IControllerWithLifeCycle;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
-
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.ad.communication.NetworkRetriever;
+import com.ad.interfaces.IControllerWithLifeCycle;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.layout.AnchorPane;
 
 public class MainViewController implements Initializable, IControllerWithLifeCycle {
     private static final String FXML_LOCATION = "/com/ad/stocks/";
     private static final String CHART_VIEW = "chart-view.fxml";
     private static final String LIST_VIEW = "table-view.fxml";
+
+    private NetworkRetriever retreiver = NetworkRetriever.getNetworkRetriever();
 
     @FXML
     private AnchorPane centerStage;
@@ -32,8 +35,7 @@ public class MainViewController implements Initializable, IControllerWithLifeCyc
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //calling the NetworkRetriever will make it so we start li
-        NetworkRetriever.getNetworkRetriever();
-
+    
         populateCenterStage(LIST_VIEW);
     }
 
